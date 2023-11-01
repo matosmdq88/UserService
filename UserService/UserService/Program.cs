@@ -1,5 +1,10 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UserService;
+using UserService.Data;
+using UserService.Data.DTOs;
+using UserService.Data.Models;
+using UserService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +16,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StoreConnection"))
 );
+builder.Services.AddTransient<IUserService, UserServices>();
+
 
 var app = builder.Build();
 
@@ -23,29 +30,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapPost("/user/signin/{dto}", async ([FromBody]SignInUserDTO dto, IMapper mapper, IUserService service) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    var user = mapper.Map<User>(dto);
+    var response = await service.SignIn(user);
+    return response ? Results.Ok("Usuario creado") : Results.BadRequest("Error al crear");
 })
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+.WithName("SignIn")
+.WithOpenApi()
+.Produces<string>(200).Produces<string>(400);
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

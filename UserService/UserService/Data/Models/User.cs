@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace UserService.Models
+namespace UserService.Data.Models
 {
     [Index(nameof(Username), IsUnique = true)]
     public class User

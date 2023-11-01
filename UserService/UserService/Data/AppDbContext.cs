@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UserService.Models;
+using UserService.Data.Models;
 
-namespace UserService
+namespace UserService.Data
 {
     public class AppDbContext : DbContext
     {
@@ -10,7 +10,7 @@ namespace UserService
 
         }
 
-        public DbSet<User> Products { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

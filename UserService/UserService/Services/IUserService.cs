@@ -1,11 +1,12 @@
-﻿using UserService.Models;
+﻿using UserService.Data.Models;
 
 namespace UserService.Services
 {
     public interface IUserService
     {
-        public User SignIn(User user);
-        public bool SignOut(User user);
-        public User Loggin(User user);
+        public Task<bool> SignIn(User user);
+        public Task<bool> LogOut(User user);
+        public Task<User> Login(User user);
+        public Task<User> GetUser(string userName);
     }
 }
