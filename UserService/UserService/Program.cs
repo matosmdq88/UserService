@@ -38,6 +38,7 @@ app.MapPost("/user/signin/{dto}", async ([FromBody]SignInUserDTO dto, IMapper ma
 })
 .WithName("SignIn")
 .WithOpenApi()
-.Produces<string>(200).Produces<string>(400);
+.Produces<string>(200)
+.Produces<string>(400);
 
 app.Run();
